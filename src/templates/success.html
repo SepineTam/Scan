@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>处理成功 - PDF扫描效果转换器</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .container {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .success-icon {
+            color: #27ae60;
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-home {
+            background-color: #95a5a6;
+        }
+        .btn-home:hover {
+            background-color: #7f8c8d;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <h1>PDF扫描效果转换器</h1>
+
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-success">
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="success-icon">✓</div>
+        <h2>处理成功！</h2>
+        <p>您的PDF文件已成功处理，现在可以下载带有扫描效果的PDF文件。</p>
+
+        <div class="actions">
+            <a href="{{ url_for('download_file', filename=filename) }}" class="btn">下载处理后的PDF</a>
+            <a href="{{ url_for('index') }}" class="btn btn-home">返回首页</a>
+        </div>
+
+        <form action="{{ url_for('cleanup') }}" method="post" style="margin-top: 40px;">
+            <input type="hidden" name="filename" value="{{ filename }}">
+            <p><small>下载完成后，您可以选择删除服务器上的文件</small></p>
+            <button type="submit" class="btn btn-home" style="font-size: 14px; padding: 8px 15px;">删除服务器上的文件</button>
+        </form>
+    </div>
+</body>
+</html>

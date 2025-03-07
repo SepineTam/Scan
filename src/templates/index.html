@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF扫描效果转换器</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .container {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .file-input {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            width: 100%;
+        }
+        .range-input {
+            width: 100%;
+        }
+        .range-value {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .features {
+            margin-top: 30px;
+        }
+        .feature-item {
+            margin-bottom: 10px;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <h1>PDF扫描效果转换器</h1>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{% if category %}{{ category }}{% else %}danger{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data" id="uploadForm">
+            <div class="form-group">
+                <label for="file">选择PDF文件:</label>
+                <input type="file" id="file" name="file" accept=".pdf" class="file-input" required>
+                <small>最大文件大小: 16MB</small>
+            </div>
+
+            <div class="form-group">
+                <label for="dpi">选择图像分辨率 (DPI):</label>
+                <input type="range" id="dpi" name="dpi" min="100" max="600" step="50" value="300" class="range-input">
+                <div id="dpiValue" class="range-value">300 DPI</div>
+                <small>更高的DPI会产生更清晰的图像，但处理时间更长</small>
+            </div>
+
+            <button type="submit" id="submitBtn">开始转换</button>
+        </form>
+
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p>处理中，请稍候...</p>
+            <p><small>处理大型PDF文件可能需要几分钟时间</small></p>
+        </div>
+    </div>
+
+    <div class="features container" style="margin-top: 30px;">
+        <h3>扫描效果包括:</h3>
+        <div class="feature-item">✓ 轻微纸张旋转（模拟放置不正）</div>
+        <div class="feature-item">✓ 调整对比度和亮度</div>
+        <div class="feature-item">✓ 轻微模糊效果（模拟扫描仪的焦点问题）</div>
+        <div class="feature-item">✓ 添加随机噪点（模拟扫描仪噪声）</div>
+        <div class="feature-item">✓ 轻微的纸张纹理</div>
+        <div class="feature-item">✓ JPEG压缩痕迹（常见于扫描文档）</div>
+        <div class="feature-item">✓ 轻微锐化处理（模拟扫描仪常见的过度锐化）</div>
+    </div>
+
+    <script>
+        // 显示当前DPI值
+        const dpiSlider = document.getElementById('dpi');
+        const dpiValue = document.getElementById('dpiValue');
+
+        dpiSlider.addEventListener('input', function() {
+            dpiValue.textContent = this.value + ' DPI';
+        });
+
+        // 表单提交时显示加载指示器
+        document.getElementById('uploadForm').addEventListener('submit', function() {
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('loadingIndicator').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
